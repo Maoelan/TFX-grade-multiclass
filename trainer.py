@@ -22,6 +22,26 @@ def transformed_name(key):
 def gzip_reader_fn(filenames):
     return tf.data.TFRecordDataset(filenames, compression_type='GZIP')
 
+def get_serve_tf_examples_fn(model, tf_transform_output):
+    """Returns a function that parses a serialized tf.Example."""
+    model.tft_layer = tf_transform_output.transform_features_layer()
+
+    @tf.function
+    def serve_tf_examples_fn(serialized_tf_examples):
+        """Returns the output to be used in the serving signature."""
+        feature_spec = tf_transform_output.raw_feature_spec()
+        feature_spec.pop(LABEL_KEY)
+        parsed_features = tf.io.parse_example(
+            serialized_tf_examples, feature_spec
+        )
+
+        transformed_features = model.tft_layer(parsed_features)
+
+        outputs = model(transformed_features)
+        return {"outputs": outputs}
+
+    return serve_tf_examples_fn
+
 def input_fn(file_pattern, tf_transform_output, batch_size=64, num_epochs=None) -> tf.data.Dataset:
     
     transform_feature_spec = (
@@ -41,7 +61,7 @@ def input_fn(file_pattern, tf_transform_output, batch_size=64, num_epochs=None) 
     dataset = dataset.repeat()
 
     return dataset
-
+    
 
 def get_model():
     input_features = []
