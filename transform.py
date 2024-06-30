@@ -1,13 +1,20 @@
-
 import tensorflow as tf
 import tensorflow_transform as tft
 
 NUMERICAL_FEATURES = [
-    "StudyTimeWeekly",
-    "Absences",
-    "Tutoring",
-    "ParentalSupport",
-    "GPA"
+    'Age', 
+    'Gender', 
+    'Ethnicity', 
+    'ParentalEducation', 
+    'StudyTimeWeekly', 
+    'Absences', 
+    'Tutoring', 
+    'ParentalSupport', 
+    'Extracurricular', 
+    'Sports', 
+    'Music', 
+    'Volunteering', 
+    'GPA'
 ]
 
 LABEL_KEY = "GradeClass"
@@ -22,6 +29,6 @@ def preprocessing_fn(inputs):
         outputs[transformed_name(feature)] = tft.scale_to_z_score(inputs[feature])
     
     # Transform the label
-    outputs[transformed_name(LABEL_KEY)] = inputs[LABEL_KEY]
-    
+    outputs[transformed_name(LABEL_KEY)] = tf.cast(inputs[LABEL_KEY], tf.int64)
+
     return outputs

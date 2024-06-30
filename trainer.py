@@ -1,4 +1,3 @@
-
 import os
 import tensorflow as tf
 import tensorflow_transform as tft
@@ -9,11 +8,19 @@ from tfx.components.trainer.executor import TrainerFnArgs
 
 LABEL_KEY = "GradeClass"
 FEATURE_KEY = [
-    "StudyTimeWeekly",
-    "Absences",
-    "Tutoring",
-    "ParentalSupport",
-    "GPA"
+    'Age', 
+    'Gender', 
+    'Ethnicity', 
+    'ParentalEducation', 
+    'StudyTimeWeekly', 
+    'Absences', 
+    'Tutoring', 
+    'ParentalSupport', 
+    'Extracurricular', 
+    'Sports', 
+    'Music', 
+    'Volunteering', 
+    'GPA'
 ]
 
 def transformed_name(key):
@@ -63,7 +70,7 @@ def input_fn(file_pattern, tf_transform_output, batch_size=64, num_epochs=None) 
     return dataset
     
 
-def get_model():
+def get_model(show_summary=True):
     input_features = []
     for key in FEATURE_KEY:
         input_features.append(
@@ -92,6 +99,9 @@ def get_model():
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
+
+    if show_summary:
+        model.summary()
 
     return model
 
