@@ -18,7 +18,7 @@ Transform process : [Transform](https://github.com/Maoelan/TFX-grade-multiclass/
 
 You can see the entire pipeline process here : [Pipeline](https://github.com/Maoelan/TFX-grade-multiclass/blob/main/classs-pipeline.ipynb)
 
-### Model Serving menggunakan docker
+### Model serving with Docker
 
 Deploying a trained machine learning model using TFX in a Docker environment.
 
